@@ -1,9 +1,9 @@
 #!/usr/bin/python
 #import sys
 #import os
-from Xlib import X, XK, display
-from Xlib.ext import record
-from Xlib.protocol import rq
+；from Xlib import X, XK, display  #X为应用程序使用的X协议声明类型和常量；XK为键盘扩展功能；display对象用于显示信息，包含很多方法
+from Xlib.ext import record #record用于将X window的事件和请求都记录下来
+from Xlib.protocol import rq #protocol为基本的X协议声明类型和符号，用于实现扩展
 #Xlib是一个用c语言编写的X Window System协议的客户端库，它包含有与x服务器进行通信的函数，编程者可以在不了解x底层协议的情况下直接使用它进行编程。
 
 local_dpy = display.Display()
