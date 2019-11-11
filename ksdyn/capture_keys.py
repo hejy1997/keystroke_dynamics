@@ -4,6 +4,7 @@
 from Xlib import X, XK, display
 from Xlib.ext import record
 from Xlib.protocol import rq
+#Xlib是一个用c语言编写的X Window System协议的客户端库，它包含有与x服务器进行通信的函数，编程者可以在不了解x底层协议的情况下直接使用它进行编程。
 
 local_dpy = display.Display()
 record_dpy = display.Display()
