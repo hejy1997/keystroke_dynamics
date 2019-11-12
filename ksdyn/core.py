@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-import scipy.stats
+import scipy.stats #统计函数库
 from abc import ABCMeta, abstractmethod
 
 class KeypressEventReceiver(object):
