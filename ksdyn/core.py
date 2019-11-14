@@ -1,40 +1,40 @@
-import pickle
+import pickle #使用pickle进行存储
 import numpy as np
 import scipy.stats #统计函数库
 from abc import ABCMeta, abstractmethod
 
-class KeypressEventReceiver(object):
+class KeypressEventReceiver(object): #用于接收击键事件的类
     '''A class that receives keypress events through a callback'''
     __metaclass__=ABCMeta
     KEY_DOWN, KEY_UP= 0, 1
     
     @abstractmethod
-    def on_key(self, key, event_type, time_ms):
+    def on_key(self, key, event_type, time_ms): #定义击键数据类型
         '''key is a integer
         event_type is in (KEY_DOWN, KEY_UP)
         time_ms is the time when the key was (de/)pressed
         '''
         pass
 
-class VersionedSerializableClass( object ):
+class VersionedSerializableClass( object ): #用于画图显示的类
     __metaclass__=ABCMeta
-    FILE_EXTENSION=".pickle"
+    FILE_EXTENSION=".pickle" #将存储文件后缀定义为静态变量
     CLASS_VERSION= -1
 
     def __init__(self, *args, **kwargs):
         self._class_version= self.CLASS_VERSION
     
-    def save_to_file(self, filename):
+    def save_to_file(self, filename): #存储数据至pickle文件内
         with open(filename+self.FILE_EXTENSION, 'wb') as f:
             self._serialize_to_file( f )
 
     @classmethod
     def load_from_file( cls, filename):
         import os
-        if not os.path.exists(filename):
-            filename+=cls.FILE_EXTENSION
+        if not os.path.exists(filename): #如果path不存在
+            filename+=cls.FILE_EXTENSION #加上后缀
         with open(filename, 'rb') as f:
-            instance= cls._deserialize_from_file( f )
+            instance= cls._deserialize_from_file( f ) #从文件中读取并反序列化，得到实例对象
 
         load_error=None
         if not isinstance( instance, cls ):
