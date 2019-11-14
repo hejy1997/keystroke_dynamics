@@ -29,7 +29,7 @@ class VersionedSerializableClass( object ): #用于画图显示的类
             self._serialize_to_file( f )
 
     @classmethod
-    def load_from_file( cls, filename):
+    def load_from_file( cls, filename): #从文件中载入数据对象
         import os
         if not os.path.exists(filename): #如果path不存在
             filename+=cls.FILE_EXTENSION #加上后缀
@@ -37,43 +37,44 @@ class VersionedSerializableClass( object ): #用于画图显示的类
             instance= cls._deserialize_from_file( f ) #从文件中读取并反序列化，得到实例对象
 
         load_error=None
-        if not isinstance( instance, cls ):
+        if not isinstance( instance, cls ): #判断反序列化后的对象和传入对象类型是否一致，若不一致
             load_error= 'Unexpected instance type'
-        elif instance._class_version!=cls.CLASS_VERSION:
+        elif instance._class_version!=cls.CLASS_VERSION: #判断class_version是否一致，若不一致
             load_error= 'Class version mismatch (expected "{}", got "{}")'.format( cls.CLASS_VERSION, instance._class_version)
-        if load_error:
+        if load_error: #有错误时，抛出错误信息
             raise TypeError("Failed to load serialized data from {}: {}".format(filename, load_error))
 
-        return instance
+        return instance #返回实例对象
 
     @classmethod
-    def load_from_dir( cls, directory ):
+    def load_from_dir( cls, directory ): #从目录中载入数据对象
         import os
         d= directory
-        filenames= [f for f in os.listdir(d) if f.endswith(cls.FILE_EXTENSION)]
-        path_names= [os.path.join(d,f) for f in filenames]
-        bare_names= [fn.rstrip(cls.FILE_EXTENSION) for fn in filenames] #without extension
-        instances= map( cls.load_from_file, path_names)
-        return dict(zip(bare_names, instances))
+        filenames= [f for f in os.listdir(d) if f.endswith(cls.FILE_EXTENSION)] 
+        #列出指定目录下的后缀名为指定文件后缀的所有文件和子目录包括隐藏文件，并以列表方式打印
+        path_names= [os.path.join(d,f) for f in filenames] #将多个路径组合后返回，第一个绝对路径之前的参数将被忽略
+        bare_names= [fn.rstrip(cls.FILE_EXTENSION) for fn in filenames] #without extension 删除后缀名
+        instances= map( cls.load_from_file, path_names) #对每个路径文件进行数据对象载入并得到对象序列
+        return dict(zip(bare_names, instances)) #返回由两个列表生成的字典，bare_names为key，instances为value
 
-    def _serialize_to_file( self, f ):
+    def _serialize_to_file( self, f ): #将对象序列化并保存至文件
         pickle.dump(self, f)
 
     @classmethod
-    def _deserialize_from_file( cls, f ):
+    def _deserialize_from_file( cls, f ): #从文件读取并反序列化
          return pickle.load(f)
 
  
-class KeystrokeCaptureData(KeypressEventReceiver, VersionedSerializableClass):
+class KeystrokeCaptureData(KeypressEventReceiver, VersionedSerializableClass): #击键数据获取与记录
     '''Recorded data of actual keystrokes pressed by a user'''
     FILE_EXTENSION=".keypresses"
     CLASS_VERSION= 0
 
-    def __init__(self, existing_data=None):
+    def __init__(self, existing_data=None): #初始化，将已有数据存入列表，元素格式为为（键值，类型，时间）
         VersionedSerializableClass.__init__(self)
         self.log= list(existing_data) if existing_data else []
 
-    def on_key(self, key, event_type, time_ms):
+    def on_key(self, key, event_type, time_ms): #加入新的击键数据
         '''Append a keypress event to this capture data'''
         self.log.append( (key, event_type, time_ms) )
 
