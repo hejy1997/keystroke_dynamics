@@ -74,25 +74,25 @@ class KeystrokeCaptureData(KeypressEventReceiver, VersionedSerializableClass): #
         VersionedSerializableClass.__init__(self)
         self.log= list(existing_data) if existing_data else []
 
-    def on_key(self, key, event_type, time_ms): #加入新的击键数据
+    def on_key(self, key, event_type, time_ms): #加入新的击键数据至列表中
         '''Append a keypress event to this capture data'''
         self.log.append( (key, event_type, time_ms) )
 
-    def feed(self, event_receiver):
+    def feed(self, event_receiver): #将列表中的击键数据逐个放入event_receiver中并返回event_receiver
         '''feeds this data into a KeypressEventReceiver.
         Returns the event_receiver'''
         for event in self.log:
             event_receiver.on_key( *event )
         return event_receiver
 
-    def _serialize_to_file( self, f ):
+    def _serialize_to_file( self, f ): #将数据列表写入文件
         f.write( str(self.log) )
 
     @classmethod
-    def _deserialize_from_file( self, f ):
+    def _deserialize_from_file( self, f ): #
         from ast import literal_eval
-        data= literal_eval(f.read())
-        return KeystrokeCaptureData(data)
+        data= literal_eval(f.read()) #从文件读取数据并从字符串转换成原有数据类型
+        return KeystrokeCaptureData(data) #返回击键数据记录列表对象
 
 class InsufficientData(ValueError):
     '''Raised when there is insuficient data to perform a given operation.
@@ -135,11 +135,11 @@ class Named(object):
     def __init__(self, name):
         self.name= str(name)
 
-    def __repr__( self ):
+    def __repr__( self ): #自我描述：类名，name值
         return "{}( {} )".format( self.__class__.__name__, self.name )
          
 
-class DictTree(dict, Named):
+class DictTree(dict, Named): #字典树，以其他字典作为该字典的值
     '''A dict that can have other DictTree objects as values. 
     Basically, a arbitrary tree that can have any object as a leave.'''
     IGNORE_CHILD='IGNORE_CHILD'
