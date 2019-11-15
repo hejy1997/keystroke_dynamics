@@ -143,12 +143,12 @@ class DictTree(dict, Named): #字典树，以其他字典作为该字典的值
     '''A dict that can have other DictTree objects as values. 
     Basically, a arbitrary tree that can have any object as a leave.'''
     IGNORE_CHILD='IGNORE_CHILD'
-    def __init__( self, name, children=() ):
+    def __init__( self, name, children=() ): #name是用于找到子节点的名字
         '''If this DictTree is a child of another (its parent), NAME will be the key used to identify it in the parent dict.'''
         Named.__init__(self, name)
-        for i,c in enumerate(children):
+        for i,c in enumerate(children): #遍历children对象，得到一个索引序列，i为下标，c为数据
             c_name= c.name if isinstance(c, DictTree) else self._leaf_name(c, i)
-            self[c_name]=c
+            self[c_name]=c #若c是一个节点，则加入该节点的子节点名单中；否则打印叶子名
 
     def _leaf_name(self, leaf, default=""):
         try:
