@@ -161,11 +161,11 @@ class DictTree(dict, Named): #字典树，以其他字典作为该字典的值
         '''Given N DictTrees, returns N DictTrees, such that
         each outputed tree is a exact copy of the input, but only
         contains children whose names (keys) appear on *all* trees'''
-        recursive=True
-        common_names= reduce(set.intersection, [set(f.keys()) for f in trees])
+        recursive=True #递归
+        common_names= reduce(set.intersection, [set(f.keys()) for f in trees]) #将树的每个键值组成集合，求其交集
         def get_childs( child_name ):
             '''returns the child with child_name for every tree'''
-            childs= [tree[child_name] for tree in trees]
+            childs= [tree[child_name] for tree in trees] #返回每个树的子节点的名字
             if recursive and childs and isinstance(childs[0], DictTree):
                 return cls.getCommonFeatures( childs )
             else:
@@ -174,7 +174,7 @@ class DictTree(dict, Named): #字典树，以其他字典作为该字典的值
         return [cls(tree.name, childs) for tree,childs in zip(trees, all_childs)]
 
     @staticmethod
-    def _isleave( x ):
+    def _isleave( x ): #判断是否叶子节点
         return not isinstance(x, DictTree)
 
     @classmethod
